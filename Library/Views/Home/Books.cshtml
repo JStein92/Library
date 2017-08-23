@@ -1,0 +1,42 @@
+@{
+  Layout = "_Layout";
+}
+
+<div class="row">
+  <div class="col-lg-6">
+    <form action="/book-search-results" method="post">
+    <div class="input-group">
+      <span class="input-group-btn">
+
+      <button class="btn btn-default" type="button">Go!</button>
+      </span>
+      <input type="text" class="form-control" name="book-search" placeholder="Search for book">
+    </form>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+
+<div class="page-header">
+  <h1>Books</h1>
+</div>
+
+@foreach(var book in Model)
+{
+  <div class="panel panel-info">
+    <div class="panel-heading">
+
+    <form action="/delete-book/@book.GetId()" method="post">
+      <button type="submit" class="btn btn-danger delete">Delete</button>
+      </form>
+
+      <h3 class="panel-title"><a href="/book-details/@book.GetId()">@book.GetTitle()</a></h3>
+      </div>
+      <ul class="list-group">
+      <h4 class="panel-body">Authors</h4>
+      @foreach(var author in book.GetAuthors())
+      {
+        <li class="list-group-item">@author.GetName()</li>
+      }
+      </ul>
+  </div>
+}

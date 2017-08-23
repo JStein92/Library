@@ -1,0 +1,39 @@
+@{
+  Layout = "_Layout";
+}
+
+<div class="page-header">
+  <h1>Book Details</h1>
+</div>
+
+<form action='/book-update/@Model["book"].GetId()' method="post" class="form-group">
+
+  <label for="title">Book Title</label>
+  <input type="text" name="title" class="form-control" pattern=".{1,}" required title="One or more characters" value = '@Model["book"].GetTitle()' autofocus>
+
+  <label for="genre">Book Genre</label>
+  <input type="text" name="genre" class="form-control" pattern=".{1,}" required title="One or more characters" value = '@Model["book"].GetGenre()'>
+
+  <label for="publish-date">Book publish date</label>
+  <input type="date" name="publish-date" class="form-control" required value = '@Model["book"].GetPublishDate()'>
+
+  <button type="submit" class="btn btn-success" name="button">Update </button>
+</form>
+
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">Current Authors:</h3>
+  </div>
+  <ul class="list-group">
+
+
+    @foreach(var author in Model["authors"])
+    {
+
+      <form action="/book-details/remove-author" method="post">
+      <li class="list-group-item">@author.GetName()
+      <button type="submit" class="btn btn-danger">Remove</button></li>
+      </form>
+    }
+    </ul>
+    </div>

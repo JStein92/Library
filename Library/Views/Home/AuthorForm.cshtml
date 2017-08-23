@@ -1,0 +1,12 @@
+@{
+  Layout = "_Layout";
+}
+
+<form action="/author-add-confirmation" method="post" class="form-group">
+
+  <label for="title">Author Name</label>
+  <input type="text" name="author-name" class="form-control" pattern=".{1,}" required title="One or more characters" autofocus>
+
+  <button type="submit" class="btn btn-success" name="button">Add Author</button>
+
+</form>

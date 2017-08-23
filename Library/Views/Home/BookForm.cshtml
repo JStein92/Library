@@ -1,0 +1,26 @@
+@{
+  Layout = "_Layout";
+}
+
+<form action="/book-add-confirmation" method="post" class="form-group">
+
+  <label for="title">Book Title</label>
+  <input type="text" name="title" class="form-control" pattern=".{1,}" required title="One or more characters" autofocus>
+
+  <label for="genre">Book Genre</label>
+  <input type="text" name="genre" class="form-control" pattern=".{1,}" required title="One or more characters">
+
+  <label for="publish-date">Book publish date</label>
+  <input type="date" name="publish-date" class="form-control" required>
+
+  <label for="sel2">Select all authors:</label>
+    <select multiple class="form-control" name="authors" required>
+      @foreach(var author in Model)
+      {
+          <option value="@author.GetId()">@author.GetName()</option>
+      }
+     </select>
+
+  <button type="submit" class="btn btn-success" name="button">Add book</button>
+
+</form>

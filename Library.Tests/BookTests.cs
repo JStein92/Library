@@ -121,6 +121,26 @@ namespace Library.Tests
       Assert.AreEqual(expected,actual);
     }
 
+    [TestMethod]
+    public void SearchByBookTitle_SearchesByBookTitleInDatabase_BookList()
+    {
+      DateTime publishDate = DateTime.Now;
+
+      Book one = new Book("Eye of the World", "Fantasy", publishDate);
+      Book two = new Book("As the World Turns", "Fantasy", publishDate);
+      Book three = new Book("World", "Fantasy", publishDate);
+      Book four = new Book("Cities and States", "Fantasy", publishDate);
+      one.Save();
+      two.Save();
+      three.Save();
+      four.Save();
+
+      List<Book> expected = new List<Book> {one, two, three};
+      List<Book> actual = Book.SearchByBookTitle("World");
+
+      CollectionAssert.AreEqual(expected, actual);
+    }
+
 
 
 

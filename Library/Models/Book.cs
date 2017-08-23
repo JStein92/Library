@@ -271,6 +271,40 @@ namespace Library.Models
       return newBook;
     }
 
+    public static List<Book> SearchByBookTitle(string bookTitle)
+    {
+      List<Book> matchingBooks = new List<Book>{};
+
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT * FROM books WHERE title LIKE CONCAT('%' ,@bookTitle,'%');";
+
+      MySqlParameter book = new MySqlParameter();
+      book.ParameterName = "@bookTitle";
+      book.Value = bookTitle;
+      cmd.Parameters.Add(book);
+
+      var rdr = cmd.ExecuteReader() as MySqlDataReader;
+      while(rdr.Read())
+      {
+        int id = rdr.GetInt32(0);
+        string title = rdr.GetString(1);
+        string genre = rdr.GetString(2);
+        DateTime publishDate = rdr.GetDateTime(3);
+
+        Book newBook = new Book(title, genre, publishDate, id);
+        matchingBooks.Add(newBook);
+      }
+      conn.Close();
+      if(conn != null)
+      {
+        conn.Dispose();
+      }
+      return matchingBooks;
+    }
+
     public void Delete()
     {
       MySqlConnection conn = DB.Connection();
@@ -292,9 +326,5 @@ namespace Library.Models
         conn.Dispose();
       }
     }
-
-
-
-
   }
 }

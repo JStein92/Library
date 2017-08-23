@@ -110,8 +110,13 @@ namespace Library.Tests
       Author newAuthor4 = new Author("Michael");
       newAuthor4.Save();
 
-      List<Author> expected = new List<Author>{newAuthor, newAuthor2, newAuthor3};
+      Author newAuthor5 = new Author("Rob");
+      newAuthor5.Save();
+
+      List<Author> expected = new List<Author>{newAuthor, newAuthor2, newAuthor3, newAuthor5};
       List<Author> actual= Author.SearchByAuthor("Rob");
+
+      Console.WriteLine("ACTUAL COUNT: " + actual.Count);
 
       foreach (var author in expected)
       {

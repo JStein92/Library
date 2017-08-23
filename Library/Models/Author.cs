@@ -235,7 +235,7 @@ namespace Library.Models
       conn.Open();
 
       var cmd = conn.CreateCommand() as MySqlCommand;
-      cmd.CommandText = @"SELECT * FROM authors WHERE name LIKE '%'+@authorName+'%';";
+      cmd.CommandText = @"SELECT * FROM authors WHERE name LIKE CONCAT('%',@authorName,'%');";
 
       Console.WriteLine(cmd.CommandText);
 
