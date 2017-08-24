@@ -138,6 +138,9 @@ namespace Library.Tests
     {
       Book.DeleteAll();
       Author.DeleteAll();
+      Copy.DeleteAll();
+      Patron.DeleteAll();
+      Book.DeleteAllCopies();
     }
 
   }

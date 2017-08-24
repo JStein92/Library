@@ -15,7 +15,7 @@
   <input type="text" name="genre" class="form-control" pattern=".{1,}" required title="One or more characters" value = '@Model["book"].GetGenre()'>
 
   <label for="publish-date">Book publish date</label>
-  <input type="date" name="publish-date" class="form-control" required value = '@Model["book"].GetPublishDate()'>
+  <input type="date" name="publish-date" class="form-control" required value = '@Model["book"].GetPublishDate().Year.ToString("d4")-@Model["book"].GetPublishDate().Month.ToString("d2")-@Model["book"].GetPublishDate().Day.ToString("d2")'>
 
   <button type="submit" class="btn btn-success" name="button">Update </button>
 </form>
@@ -25,15 +25,29 @@
     <h3 class="panel-title">Current Authors:</h3>
   </div>
   <ul class="list-group">
-
-
-    @foreach(var author in Model["authors"])
+    @foreach(var author in Model["book"].GetAuthors())
     {
-
-      <form action="/book-details/remove-author" method="post">
-      <li class="list-group-item">@author.GetName()
-      <button type="submit" class="btn btn-danger">Remove</button></li>
-      </form>
+      <li class="list-group-item">
+        <form action='/book-details/@Model["book"].GetId()/remove-author' method="post">
+          <p>
+            @author.GetName()
+            <button type="submit" class="btn btn-danger delete">X</button>
+          </p>
+          <input type="hidden" value="@author.GetId()" name="authorToDelete">
+          </form>
+      </li>
     }
     </ul>
-    </div>
+</div>
+
+    <form action='/book-details/@Model["book"].GetId()/author-added' method="post">
+      <label for="sel2">Add author(s):</label>
+        <select multiple class="form-control" name="authors" required>
+          @foreach(var author in Model["authors"])
+          {
+              <option value="@author.GetId()">@author.GetName()</option>
+          }
+         </select>
+
+      <button type="submit" class="btn btn-success" name="button">Add author(s)</button>
+    </form>

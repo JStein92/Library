@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Library.Models;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace Library.Controllers
 {
@@ -98,11 +99,15 @@ namespace Library.Controllers
     {
       Dictionary<string, object> model = new Dictionary<string, object> {};
 
-      Book newBook = Book.Find(id);
-      List<Author> allAuthors = Author.GetAll();
+      Book updatedBook = Book.Find(id);
 
-      model.Add("book", newBook);
-      model.Add("authors", allAuthors);
+      List<Author> allAuthors = Author.GetAll();
+      List<Author> bookAuthors = updatedBook.GetAuthors();
+
+      List<Author> unqiueAuthors = allAuthors.Except(bookAuthors).ToList();
+
+      model.Add("book", updatedBook);
+      model.Add("authors", unqiueAuthors);
 
       return View(model);
     }
@@ -120,6 +125,67 @@ namespace Library.Controllers
 
       return View("Books", Book.GetAll());
     }
+
+    [HttpPost("/book-details/{id}/author-added")]
+    public ActionResult BookDetailsUpdateAuthors(int id)
+    {
+      Dictionary<string, object> model = new Dictionary<string, object> {};
+
+
+      Book updatedBook = Book.Find(id);
+
+      string authorValues = (Request.Form["authors"]);
+      string[] split = authorValues.Split(',');
+
+      foreach(var authorId in split)
+      {
+        updatedBook.AddAuthor(Author.Find(int.Parse(authorId)));
+      }
+
+      List<Author> allAuthors = Author.GetAll();
+      List<Author> bookAuthors = updatedBook.GetAuthors();
+
+      List<Author> unqiueAuthors = allAuthors.Except(bookAuthors).ToList();
+
+      model.Add("book", updatedBook);
+      model.Add("authors", unqiueAuthors);
+
+      return View("BookDetails", model);
+    }
+
+    [HttpPost("/book-details/{id}/remove-author")]
+    public ActionResult BookDetailsRemoveAuthor(int id)
+    {
+      Dictionary<string, object> model = new Dictionary<string, object> {};
+
+
+      Book updatedBook = Book.Find(id);
+      Author authorToDelete = Author.Find(int.Parse(Request.Form["authorToDelete"]));
+
+      updatedBook.DeleteAuthor(authorToDelete);
+
+      List<Author> allAuthors = Author.GetAll();
+      List<Author> bookAuthors = updatedBook.GetAuthors();
+
+      List<Author> unqiueAuthors = allAuthors.Except(bookAuthors).ToList();
+
+      model.Add("book", updatedBook);
+      model.Add("authors", unqiueAuthors);
+
+      return View("BookDetails", model);
+    }
+
+    [HttpPost("/authors/{id}/deleted")]
+    public ActionResult AuthorsRemoveAuthor(int id)
+    {
+      Author deleteAuthor = Author.Find(id);
+      deleteAuthor.Delete();
+
+      List<Author> remainingAuthors = Author.GetAll();
+
+      return View("Authors", remainingAuthors);
+    }
+
   }
 
 }

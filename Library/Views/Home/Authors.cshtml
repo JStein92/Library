@@ -24,7 +24,9 @@
 {
   <div class="panel panel-info">
     <div class="panel-heading">
-      <h3 class="panel-title">@author.GetName()</h3>
+      <form action="/authors/@author.GetId()/deleted" method="post">
+      <h3 class="panel-title">@author.GetName()<button type="submit" class="btn btn-danger delete">X</button></h3>
+      </form>
     </div>
       <ul class="list-group">
       <h4 class="panel-body">Books</h4>

@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System;
 using Library.Models;
+using System.Linq;
 
 namespace Library.Tests
 {
@@ -141,13 +142,81 @@ namespace Library.Tests
       CollectionAssert.AreEqual(expected, actual);
     }
 
+    [TestMethod]
+    public void GetUniqueAuthors_GetUniqueItemsBetween2Lists_ListAuthors()
+    {
+      DateTime publishDate = DateTime.Now;
+      Book bookOne = new Book("Eye of the World", "Fantasy", publishDate);
+      bookOne.Save();
+
+      Author authorOne = new Author("Patrick");
+      authorOne.Save();
+      Author authorTwo = new Author("Robert");
+      authorTwo.Save();
+      Author authorThree = new Author("Rowling");
+      authorThree.Save();
+
+      bookOne.AddAuthor(authorOne);
+      bookOne.AddAuthor(authorTwo);
 
 
+      List<Author> allAuthors = Author.GetAll();
+      List<Author> bookAuthors = bookOne.GetAuthors();
+
+      List<Author> expected = new List<Author>{authorThree};
+      List<Author> actual = allAuthors.Except(bookAuthors).ToList();
+
+      foreach(var author in actual)
+      {
+        Console.WriteLine("UNIQUE AUTHOR: " + author.GetName());
+      }
+      CollectionAssert.AreEqual(expected,actual);
+    }
+
+    [TestMethod]
+    public void DeleteAuthor_DeletesAuthorFromBook_ListAuthors()
+    {
+      DateTime publishDate = DateTime.Now;
+      Book bookOne = new Book("Eye of the World", "Fantasy", publishDate);
+      bookOne.Save();
+
+      Author authorOne = new Author("Patrick");
+      authorOne.Save();
+      Author authorTwo = new Author("Robert");
+      authorTwo.Save();
+
+      bookOne.AddAuthor(authorOne);
+      bookOne.AddAuthor(authorTwo);
+
+      bookOne.DeleteAuthor(authorTwo);
+
+      List<Author> expected = new List<Author>{authorOne};
+      List<Author> actual = bookOne.GetAuthors();
+
+      CollectionAssert.AreEqual(expected,actual);
+    }
+
+    [TestMethod]
+    public void AddCopies_AddsCopyOfBookToCopiesTableInDB_BookCount()
+    {
+      DateTime publishDate = DateTime.Now;
+      Book bookOne = new Book("Eye of the World", "Fantasy", publishDate);
+      bookOne.Save();
+      bookOne.AddCopies(5);
+
+      int expected = 5;
+      int actual = bookOne.GetCopiesCount();
+
+      Assert.AreEqual(expected, actual);
+    }
 
     public void Dispose()
     {
-      Author.DeleteAll();
       Book.DeleteAll();
+      Author.DeleteAll();
+      Copy.DeleteAll();
+      Patron.DeleteAll();
+      Book.DeleteAllCopies();
     }
   }
 

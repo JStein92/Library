@@ -326,5 +326,113 @@ namespace Library.Models
         conn.Dispose();
       }
     }
+
+    public void DeleteAuthor(Author authorToDelete)
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"DELETE FROM authors_books WHERE author_id = @authorId AND book_id = @thisId;";
+
+      MySqlParameter authorId = new MySqlParameter();
+      authorId.ParameterName = "@authorId";
+      authorId.Value = authorToDelete.GetId();
+      cmd.Parameters.Add(authorId);
+
+      MySqlParameter idParameter = new MySqlParameter();
+      idParameter.ParameterName = "@thisId";
+      idParameter.Value = _id;
+      cmd.Parameters.Add(idParameter);
+
+       cmd.ExecuteNonQuery();
+
+      conn.Close();
+      if(conn != null)
+      {
+        conn.Dispose();
+      }
+
+    }
+
+    public void AddCopies(int numberOfCopies)
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"INSERT INTO copies (book_id, checkout_date, due_date) VALUES (@bookId, @checkoutDate, @dueDate);";
+
+      MySqlParameter bookId = new MySqlParameter();
+      bookId.ParameterName = "@bookId";
+      bookId.Value = _id;
+      cmd.Parameters.Add(bookId);
+
+      MySqlParameter checkoutDate = new MySqlParameter();
+      checkoutDate.ParameterName = "@checkoutDate";
+      checkoutDate.Value = default(DateTime);
+      cmd.Parameters.Add(checkoutDate);
+
+      MySqlParameter dueDate = new MySqlParameter();
+      dueDate.ParameterName = "@dueDate";
+      dueDate.Value = default(DateTime);
+      cmd.Parameters.Add(dueDate);
+
+      for(int i = 0; i < numberOfCopies; i++)
+      {
+        cmd.ExecuteNonQuery();
+      }
+      conn.Close();
+      if(conn != null)
+      {
+        conn.Dispose();
+      }
+    }
+
+    public int GetCopiesCount()
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT * FROM copies WHERE book_id = @bookId;";
+
+      MySqlParameter bookCopy = new MySqlParameter();
+      bookCopy.ParameterName = "@bookId";
+      bookCopy.Value = _id;
+      cmd.Parameters.Add(bookCopy);
+
+      int count = 0;
+
+      var rdr = cmd.ExecuteReader() as MySqlDataReader;
+      while (rdr.Read())
+      {
+        count++;
+      }
+      conn.Close();
+      if(conn != null)
+      {
+        conn.Dispose();
+      }
+
+      return count;
+    }
+
+    public static void DeleteAllCopies()
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"DELETE FROM copies";
+
+      cmd.ExecuteNonQuery();
+
+      conn.Close();
+      if(conn != null)
+      {
+        conn.Dispose();
+      }
+    }
   }
 }
