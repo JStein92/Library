@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Aug 24, 2017 at 01:46 AM
+-- Generation Time: Aug 25, 2017 at 01:57 AM
 -- Server version: 5.6.35
 -- PHP Version: 7.0.15
 
@@ -58,6 +58,43 @@ CREATE TABLE `books` (
   `publish_date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `copies`
+--
+
+CREATE TABLE `copies` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `book_id` int(11) DEFAULT NULL,
+  `checked_out` tinyint(1) DEFAULT '0',
+  `checkout_date` datetime DEFAULT NULL,
+  `due_date` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `copies_patrons`
+--
+
+CREATE TABLE `copies_patrons` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `copy_id` int(11) DEFAULT NULL,
+  `patron_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patrons`
+--
+
+CREATE TABLE `patrons` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --
 -- Indexes for dumped tables
 --
@@ -84,6 +121,27 @@ ALTER TABLE `books`
   ADD UNIQUE KEY `id` (`id`);
 
 --
+-- Indexes for table `copies`
+--
+ALTER TABLE `copies`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`);
+
+--
+-- Indexes for table `copies_patrons`
+--
+ALTER TABLE `copies_patrons`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`);
+
+--
+-- Indexes for table `patrons`
+--
+ALTER TABLE `patrons`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -91,17 +149,32 @@ ALTER TABLE `books`
 -- AUTO_INCREMENT for table `authors`
 --
 ALTER TABLE `authors`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=406;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=820;
 --
 -- AUTO_INCREMENT for table `authors_books`
 --
 ALTER TABLE `authors_books`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=311;
 --
 -- AUTO_INCREMENT for table `books`
 --
 ALTER TABLE `books`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=324;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=773;
+--
+-- AUTO_INCREMENT for table `copies`
+--
+ALTER TABLE `copies`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=846;
+--
+-- AUTO_INCREMENT for table `copies_patrons`
+--
+ALTER TABLE `copies_patrons`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+--
+-- AUTO_INCREMENT for table `patrons`
+--
+ALTER TABLE `patrons`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=270;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -54,10 +54,8 @@ namespace Library.Models
         bool idEquality = this.GetId() == newCopy.GetId();
         bool bookIdEquality = this.GetBookId() == newCopy.GetBookId();
         bool checkedOutEquality = this.GetCheckedOut() == newCopy.GetCheckedOut();
-        bool checkoutDateEquality = this.GetCheckoutDate() == newCopy.GetCheckoutDate();
-        bool dueDateEquality = this.GetDueDate() == newCopy.GetDueDate();
 
-        return (idEquality && bookIdEquality && checkedOutEquality && checkoutDateEquality && dueDateEquality);
+        return (idEquality && bookIdEquality && checkedOutEquality);
       }
     }
 
@@ -95,7 +93,7 @@ namespace Library.Models
 
       }
 
-
+      _id = (int) cmd.LastInsertedId;
       conn.Close();
       if(conn != null)
       {
@@ -212,6 +210,99 @@ namespace Library.Models
         dueDate = rdr.GetDateTime(4);
       }
       Copy foundCopy = new Copy(bookId, checkedOut, checkoutDate, dueDate, myId);
+      conn.Close();
+      if(conn != null)
+      {
+        conn.Dispose();
+      }
+      return foundCopy;
+    }
+
+    public void CheckoutUpdate()
+    {
+      DateTime now = DateTime.Now;
+      // var tempDate = now.ToString();
+      // Console.WriteLine("STRING: " + tempDate);
+
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"UPDATE copies SET checked_out = @checkedOut, checkout_date = @checkoutDate, due_date = @dueDate WHERE id = @thisId;";
+
+      MySqlParameter checkedOut = new MySqlParameter();
+      checkedOut.ParameterName = "@checkedOut";
+      checkedOut.Value = true;
+      cmd.Parameters.Add(checkedOut);
+
+      MySqlParameter checkoutDate = new MySqlParameter();
+      checkoutDate.ParameterName = "@checkoutDate";
+      checkoutDate.Value = now;
+      cmd.Parameters.Add(checkoutDate);
+
+      MySqlParameter dueDate = new MySqlParameter();
+      dueDate.ParameterName = "@dueDate";
+      dueDate.Value = now.AddDays(7);
+      cmd.Parameters.Add(dueDate);
+
+      MySqlParameter idParameter = new MySqlParameter();
+      idParameter.ParameterName = "@thisId";
+      idParameter.Value = _id;
+      cmd.Parameters.Add(idParameter);
+
+      _checkedOut = true;
+      _checkoutDate = now;
+      _dueDate = now.AddDays(7);
+
+      cmd.ExecuteNonQuery();
+      conn.Close();
+      if(conn != null)
+      {
+        conn.Dispose();
+      }
+
+    }
+
+    public string GetBookTitle()
+    {
+      return Book.Find(_bookId).GetTitle();
+    }
+
+    public static Copy FindAvailableCopy(int bookId)
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText =@"SELECT * FROM copies WHERE book_id = @bookId AND checked_out = @checkedOut LIMIT 1;";
+
+      MySqlParameter bookIdParameter  = new MySqlParameter();
+      bookIdParameter.ParameterName = "@bookId";
+      bookIdParameter.Value = bookId;
+      cmd.Parameters.Add(bookIdParameter);
+
+      MySqlParameter checkedOutParameter  = new MySqlParameter();
+      checkedOutParameter.ParameterName = "@checkedOut";
+      checkedOutParameter.Value = false;
+      cmd.Parameters.Add(checkedOutParameter);
+
+      var rdr = cmd.ExecuteReader() as MySqlDataReader;
+
+      int myId = 0;
+      int myBookId = 0;
+      bool checkedOut = false;
+      DateTime checkoutDate = DateTime.Now;
+      DateTime dueDate = DateTime.Now;
+
+      while(rdr.Read())
+      {
+        myId = rdr.GetInt32(0);
+        myBookId = rdr.GetInt32(1);
+        checkedOut = rdr.GetBoolean(2);
+        checkoutDate = rdr.GetDateTime(3);
+        dueDate = rdr.GetDateTime(4);
+      }
+      Copy foundCopy = new Copy(myBookId, checkedOut, checkoutDate, dueDate, myId);
       conn.Close();
       if(conn != null)
       {

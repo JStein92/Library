@@ -182,6 +182,8 @@ namespace Library.Models
       patronId.Value = _id;
       cmd.Parameters.Add(patronId);
 
+      Copy.Find(copyId).CheckoutUpdate();
+
       cmd.ExecuteNonQuery();
       conn.Close();
       if(conn != null)
@@ -189,6 +191,32 @@ namespace Library.Models
         conn.Dispose();
       }
     }
+
+    // public void ReturnCopy(int id)
+    // {
+    //   MySqlConnection conn = DB.Connection();
+    //   conn.Open();
+    //
+    //   var cmd = conn.CreateCommand() as MySqlCommand;
+    //   cmd.CommandText = @"UPDATE copies SET checked_out = @checkedOut WHERE id = @copyID;";
+    //
+    //   MySqlParameter checkedOut = new MySqlParameter();
+    //   checkedOut.ParameterName = "@checkedOut";
+    //   checkedOut.Value = false;
+    //   cmd.Parameters.Add(checkedOut);
+    //
+    //   MySqlParameter copyId = new MySqlParameter();
+    //   copyId.ParameterName = "@copyId";
+    //   copyId.Value = id;
+    //   cmd.Parameters.Add(copyId);
+    //
+    //   cmd.ExecuteNonQuery();
+    //   conn.Close();
+    //   if(conn != null)
+    //   {
+    //     conn.Dispose();
+    //   }
+    // }
 
     public List<Copy> GetCopies()
     {

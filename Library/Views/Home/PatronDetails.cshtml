@@ -1,0 +1,40 @@
+@{
+  Layout = "_Layout";
+}
+
+<div class="page-header">
+  <h1>Details for @Model["patron"].GetName()</h1>
+</div>
+
+
+<h1>Currently Checked Out:</h1>
+
+@foreach(var copy in @Model["patron"].GetCopies())
+{
+  <div class="panel panel-info">
+    <div class="panel-heading">
+    <form action='/patron-details/@Model["patron"].GetId()/return/@copy.GetId()' method="post">
+      <h3 class="panel-title">@copy.GetBookTitle()<button type="submit" class="btn btn-info delete">Return</button></h3>
+      </form>
+    </div>
+
+      <ul class="list-group">
+        <li class="list-group-item">Checked out on: @copy.GetCheckoutDate()</li>
+        <li class="list-group-item">Due: @copy.GetDueDate()</li>
+      </ul>
+
+  </div>
+}
+
+<form action='/patron-details/@Model["patron"].GetId()/copy-added' method="post">
+  <label for="sel2">Checkout books:</label>
+    <select multiple class="form-control" name="books" required>
+
+      @foreach(var book in Model["books"])
+      {
+          <option value="@book.GetId()">@book.GetTitle() Copies left: (@book.GetCopiesAvailableCount())</option>
+      }
+     </select>
+
+  <button type="submit" class="btn btn-success" name="button">Checkout</button>
+</form>

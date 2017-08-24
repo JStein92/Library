@@ -116,16 +116,6 @@ namespace Library.Tests
       List<Author> expected = new List<Author>{newAuthor, newAuthor2, newAuthor3, newAuthor5};
       List<Author> actual= Author.SearchByAuthor("Rob");
 
-      Console.WriteLine("ACTUAL COUNT: " + actual.Count);
-
-      foreach (var author in expected)
-      {
-        Console.WriteLine("EXPECTED: " + author.GetName());
-      }
-      foreach (var author in actual)
-      {
-        Console.WriteLine("ACTUAL: " + author.GetName());
-      }
 
 
       CollectionAssert.AreEqual(expected,actual);

@@ -26,11 +26,74 @@ namespace Library.Controllers
       return View(Book.GetAll());
     }
 
+    [HttpGet("/patrons")]
+    public ActionResult Patrons()
+    {
+      return View(Patron.GetAll());
+    }
+
+    [HttpGet("/PatronDetails/{id}")]
+    public ActionResult PatronDetails(int id)
+    {
+      Dictionary<string,object> model = new Dictionary<string,object>{};
+
+      model.Add("books", Book.GetAll());
+      model.Add("patron", Patron.Find(id));
+
+      return View(model);
+    }
+
+    [HttpPost("/patron-details/{id}/copy-added")]
+    public ActionResult PatronDetailsCheckout(int id)
+    {
+
+      Patron foundPatron = Patron.Find(id);
+
+      string bookValues = (Request.Form["books"]);
+      string[] bookIds = bookValues.Split(',');
+
+      foreach(var bookId in bookIds)
+      {
+        if (Book.Find(int.Parse(bookId)).GetCopiesCount() > 0)
+        {
+          Copy foundCopy = Copy.FindAvailableCopy(int.Parse(bookId));
+          foundPatron.CheckOutCopy(foundCopy.GetId());
+        }
+      }
+
+      Dictionary<string,object> model = new Dictionary<string,object>{};
+
+      model.Add("books", Book.GetAll());
+      model.Add("patron", Patron.Find(id));
+
+      return View("PatronDetails", model);
+    }
+
+    // [HttpPost("patron-details/{patronId}/return/{copyId}")]
+    // public ActionResult PatronDetailsReturned(int patronId, int copyId)
+    // {
+    //   Dictionary<string,object> model = new Dictionary<string,object>{};
+    //
+    //   Patron foundPatron = Patron.Find(patronId);
+    //   foundPatron.ReturnCopy(copyId);
+    //
+    //   model.Add("books", Book.GetAll());
+    //   model.Add("patron", foundPatron);
+    //
+    //   return View("PatronDetails", model);
+    // }
+
+
     [HttpGet("/bookForm")]
     public ActionResult BookForm()
     {
-
       return View(Author.GetAll());
+    }
+
+    [HttpGet("/patronForm")]
+    public ActionResult PatronForm()
+    {
+      return View();
     }
 
     [HttpPost("/book-add-confirmation")]
@@ -66,7 +129,15 @@ namespace Library.Controllers
       newAuthor.Save();
 
       return View(newAuthor);
+    }
 
+    [HttpPost("/patron-add-confirmation")]
+    public ActionResult PatronAddConfirmation()
+    {
+      Patron newPatron = new Patron(Request.Form["patron-name"]);
+      newPatron.Save();
+
+      return View(newPatron);
     }
 
     [HttpPost("/delete-book/{id}")]
@@ -116,6 +187,8 @@ namespace Library.Controllers
     public ActionResult BookDetailsUpdate(int id)
     {
       Book foundBook = Book.Find(id);
+
+      foundBook.AddCopies(int.Parse(Request.Form["copies"]));
 
       string newTitle = Request.Form["title"];
       string newGenre = Request.Form["genre"];

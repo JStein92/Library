@@ -3,7 +3,7 @@
 }
 
 <div class="page-header">
-  <h1>Book Details</h1>
+  <h1>Book Details for @Model["book"].GetTitle() </h1>
 </div>
 
 <form action='/book-update/@Model["book"].GetId()' method="post" class="form-group">
@@ -17,29 +17,35 @@
   <label for="publish-date">Book publish date</label>
   <input type="date" name="publish-date" class="form-control" required value = '@Model["book"].GetPublishDate().Year.ToString("d4")-@Model["book"].GetPublishDate().Month.ToString("d2")-@Model["book"].GetPublishDate().Day.ToString("d2")'>
 
-  <button type="submit" class="btn btn-success" name="button">Update </button>
+  <label for="copies">Number Of Copies</label>
+  <input type="number" name="copies" class="form-control" value = '@Model["book"].GetCopiesCount()'>
+
+  <button type="submit" class="btn btn-success" name="button">Update</button>
 </form>
 
-<div class="panel panel-info">
-  <div class="panel-heading">
-    <h3 class="panel-title">Current Authors:</h3>
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">Current Authors:</h3>
+      </div>
+      <ul class="list-group">
+        @foreach(var author in Model["book"].GetAuthors())
+        {
+          <li class="list-group-item">
+            <form action='/book-details/@Model["book"].GetId()/remove-author' method="post">
+              <p>
+                @author.GetName()
+                <button type="submit" class="btn btn-danger delete">X</button>
+              </p>
+              <input type="hidden" value="@author.GetId()" name="authorToDelete">
+              </form>
+          </li>
+        }
+        </ul>
+    </div>
   </div>
-  <ul class="list-group">
-    @foreach(var author in Model["book"].GetAuthors())
-    {
-      <li class="list-group-item">
-        <form action='/book-details/@Model["book"].GetId()/remove-author' method="post">
-          <p>
-            @author.GetName()
-            <button type="submit" class="btn btn-danger delete">X</button>
-          </p>
-          <input type="hidden" value="@author.GetId()" name="authorToDelete">
-          </form>
-      </li>
-    }
-    </ul>
-</div>
-
+  <div class="col-md-6">
     <form action='/book-details/@Model["book"].GetId()/author-added' method="post">
       <label for="sel2">Add author(s):</label>
         <select multiple class="form-control" name="authors" required>
@@ -51,3 +57,11 @@
 
       <button type="submit" class="btn btn-success" name="button">Add author(s)</button>
     </form>
+
+  </div>
+
+
+
+
+
+    </div>

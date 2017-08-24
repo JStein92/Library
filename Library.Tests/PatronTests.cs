@@ -94,17 +94,8 @@ namespace Library.Tests
       List<Copy> actual = newPatron.GetCopies();
       List<Copy> expected = new List<Copy>{newCopy};
 
-      Console.WriteLine("ACTUAL COUNT: " + actual.Count);
-      foreach(var copy in actual)
-      {
-          Console.WriteLine("ACTUAL COPY: " + copy.GetBookId());
-      }
-
-
       CollectionAssert.AreEqual(expected,actual);
     }
-
-
 
     public void Dispose()
     {

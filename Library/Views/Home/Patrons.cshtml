@@ -1,0 +1,26 @@
+@{
+  Layout = "_Layout";
+}
+
+<div class="page-header">
+  <h1>Patrons</h1>
+</div>
+
+@foreach(var patron in Model)
+{
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <form action="/patrons/@patron.GetId()/deleted" method="post">
+      <h3 class="panel-title"><a href="/PatronDetails/@patron.GetId()">@patron.GetName()</a><button type="submit" class="btn btn-danger delete">X</button>
+      </h3>
+      </form>
+    </div>
+      <ul class="list-group">
+      <h4 class="panel-body">Copies</h4>
+      @foreach(var copy in patron.GetCopies())
+      {
+        <li class="list-group-item">@copy.GetBookTitle()</li>
+      }
+      </ul>
+  </div>
+}

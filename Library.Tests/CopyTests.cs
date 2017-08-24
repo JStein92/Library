@@ -73,19 +73,34 @@ namespace Library.Tests
       List<Copy> expected = new List<Copy>{newCopy};
       List<Copy> actual = Copy.GetAll();
 
-      foreach(var copy in expected)
-      {
-        Console.WriteLine("EXPECTED: " + copy.GetId() + "DATETIME " + copy.GetCheckoutDate());
-      }
-      foreach(var copy in actual)
-      {
-        Console.WriteLine("EXPECTED: " + copy.GetId() + "DATETIME " + copy.GetCheckoutDate());
-      }
 
 
       CollectionAssert.AreEqual(expected, actual);
     }
 
+    [TestMethod]
+    public void CheckoutUpdate_UpdatesCopyInformationInDatabase_Copy()
+    {
+      Patron newPatron = new Patron("Jon");
+      newPatron.Save();
+
+      DateTime publishDate = DateTime.Now;
+      Book bookOne = new Book("Eye of the World", "Fantasy", publishDate);
+      bookOne.Save();
+
+      Copy newCopy = new Copy(bookOne.GetId());
+      newCopy.Save(10);
+
+      newPatron.CheckOutCopy(newCopy.GetId());
+
+      Copy expected = newCopy;
+      Copy actual = Copy.Find(newCopy.GetId());
+
+      Console.WriteLine("EXPECTED: " + newCopy.GetCheckoutDate());
+      Console.WriteLine("ACTUAL: " + actual.GetCheckoutDate());
+
+      Assert.AreEqual(expected, actual);
+    }
 
     public void Dispose()
     {

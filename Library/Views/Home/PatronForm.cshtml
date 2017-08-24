@@ -1,0 +1,16 @@
+@{
+  Layout = "_Layout";
+}
+
+<div class="page-header">
+  <h1>Add a new Patron</h1>
+</div>
+
+<form action="/patron-add-confirmation" method="post" class="form-group">
+
+  <label for="patron-name">Patron Name</label>
+  <input type="text" name="patron-name" class="form-control" pattern=".{1,}" required title="One or more characters" autofocus>
+
+  <button type="submit" class="btn btn-success" name="button">Add Patron</button>
+
+</form>

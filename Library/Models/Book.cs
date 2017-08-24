@@ -418,6 +418,40 @@ namespace Library.Models
       return count;
     }
 
+    public int GetCopiesAvailableCount()
+    {
+      MySqlConnection conn = DB.Connection();
+      conn.Open();
+
+      var cmd = conn.CreateCommand() as MySqlCommand;
+      cmd.CommandText = @"SELECT * FROM copies WHERE book_id = @bookId AND checked_out = @checkedOut;";
+
+      MySqlParameter bookCopy = new MySqlParameter();
+      bookCopy.ParameterName = "@bookId";
+      bookCopy.Value = _id;
+      cmd.Parameters.Add(bookCopy);
+
+      MySqlParameter checked_out = new MySqlParameter();
+      checked_out.ParameterName = "@checkedOut";
+      checked_out.Value = false;
+      cmd.Parameters.Add(checked_out);
+
+      int count = 0;
+
+      var rdr = cmd.ExecuteReader() as MySqlDataReader;
+      while (rdr.Read())
+      {
+        count++;
+      }
+      conn.Close();
+      if(conn != null)
+      {
+        conn.Dispose();
+      }
+
+      return count;
+    }
+
     public static void DeleteAllCopies()
     {
       MySqlConnection conn = DB.Connection();
